@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">GetDataByNet</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="hello_blank_fragment">empty field :(</string>
+    <string name="go_to_selected_btn">Go to selected</string>
+    <string name="change_cat_btn_text">Change cat</string>
 </resources>

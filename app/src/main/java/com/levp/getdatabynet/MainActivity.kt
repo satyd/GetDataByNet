@@ -1,114 +1,160 @@
 package com.levp.getdatabynet
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.Fragment
+import android.view.View
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.levp.getdatabynet.catApi.CatApi
+import com.levp.getdatabynet.questionApi.QuestionsActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_display.*
-import kotlinx.coroutines.launch
-import okhttp3.*
+import kotlinx.coroutines.*
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.GET
-import java.io.IOException
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
 
+
+@DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
-    lateinit var frag:Fragment
+
+    private lateinit var viewModel: MainViewModel
+    private val BASE_URL = "https://jsonplaceholder.typicode.com"
+    var catNum = 401
+    private val BASE_URL_CAT = "https://http.cat"
+
     //private val client = OkHttpClient()
-    private var res:String? = null
+
+    private var apiStr: String? = null
+
+    private var text: String? = null
+    private var currImage: Bitmap? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        frag = DisplayFragment()
 
-        launch_btn.setOnClickListener {
-            getInitialData()
-            addFrag()
+        val spinner = findViewById<Spinner>(R.id.choose_api_spinner)
+        val adapter: ArrayAdapter<*> = ArrayAdapter.createFromResource(
+            this,
+            R.array.api_list,
+            android.R.layout.simple_spinner_item
+        )
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                itemSelected: View?, selectedItemPosition: Int, selectedId: Long
+            ) {
+                val choose = resources.getStringArray(R.array.api_list)
+                apiStr = choose[selectedItemPosition].toLowerCase(Locale.ROOT)
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
-        remove_btn.setOnClickListener {
-            removeFrag()
+
+        getStarterCat()
+
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        get_cat_btn.setOnClickListener {
+            Toast.makeText(this, "loading image...", Toast.LENGTH_SHORT).show()
+            getStarterCat()
         }
-        load_btn.setOnClickListener {
-            val goToGetData = Intent(this,GetDataActivity::class.java)
-            startActivity(goToGetData)
+
+
+        goto_btn.setOnClickListener {
+            Log.d("api picker", apiStr?:"no string")
+
+            when(apiStr){
+                "question api"->{ startActivity(Intent(this, QuestionsActivity::class.java))}
+                else -> {}
+            }
+
         }
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP)
-            getInitialData()
     }
 
-    private fun getInitialData(){
-        val service = Retrofit.Builder()
-                .baseUrl("https://randomuser.me/")
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
-                .create(UserService::class.java)
+    private fun getStarterCat() {
+        GlobalScope.launch(Dispatchers.Main) {
+            val catLink = getStarterCatLink()
+            Log.d("cat link", catLink)
+            Glide.with(this@MainActivity)
+                .asBitmap()
+                .load(catLink)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                    ) {
+                        display_pic.setImageBitmap(resource)
+                    }
 
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        // this is called when imageView is cleared on lifecycle call or for
+                        // some other reason.
+                        // if you are referencing the bitmap somewhere else too other than this imageView
+                        // clear it here as you can no longer have the bitmap
+                    }
+                })
+        }
+    }
+
+    private suspend fun getStarterCatLink(): String {
+        val URL = "https://aws.random.cat"
+        val api = Retrofit.Builder()
+            .baseUrl(URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CatApi::class.java)
+
+        var ans = CompletableDeferred<String>()
+
+        val operation = Job(GlobalScope.launch(Dispatchers.IO) {
+            Log.d("launch", "get cat coroutine launched")
+            val response = api.getCatPic()
+
+            if (response.isSuccessful) {
+                ans.complete(response.body()?.file ?: "https://http.cat/404")
+                Log.d("cat response", "${ans}")
+
+            } else {
+                Log.e("response", "failed to load cat")
+            }
+
+        })
+
+        return ans.await()
+    }
+
+    private fun getInitialData1() {
         lifecycleScope.launch {
-            val users = service.getUsers()
-            res = users.toString()
-            Log.d("TAG_", users.toString())
+            viewModel.loadData1()
+            text = viewModel.text?.value
+
         }
+        Toast.makeText(this, "$text loaded!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun removeFrag(){
-        val ft  = supportFragmentManager.beginTransaction()
-        if(frag.isAdded){
-            ft.remove(frag).commit()
 
-            //ft.detach(frag)
+    private fun showData() {
+
+        val displayText = findViewById<TextView>(R.id.display_text)
+        val displayPic = findViewById<ImageView>(R.id.display_pic)
+        if (displayText != null)
+            displayText.text = text ?: "Данные не пришли, ебац"
+        if (displayPic != null && currImage != null) {
+            displayPic.setImageBitmap(currImage)
         }
-        else{
-            Toast.makeText(this,"Nothing to remove :/",Toast.LENGTH_SHORT).show()
-        }
+
     }
-    private fun addFrag(){
-        val ft  = supportFragmentManager.beginTransaction()
 
-        if(!frag.isAdded) {
-            ft.add(R.id.fragment_container,frag)
-            ft.addToBackStack(null)
-            ft.commit()
-
-        }
-        else
-        {
-            Toast.makeText(this,"fragment is added",Toast.LENGTH_SHORT).show()
-        }
-        val dt = findViewById<TextView>(R.id.display_text)
-        if(dt!=null)
-            dt.text = res ?: "Данные не пришли, ебац"
-    }
-    private fun loadData(){
-        //run("https://api.github.com/users/Evin1-/repos")
-        //Log.e("request launched","hehehehe")
-    }
-//    private fun run(url: String) {
-//        val request = Request.Builder()
-//                .url(url)
-//                .build()
-//
-//        client.newCall(request).enqueue(object : Callback {
-//            override fun onFailure(call: Call, e: IOException) {}
-//            override fun onResponse(call: Call, response: Response) { res = response.body()?.string() }
-//        })
-//
-//    }
-}
-
-
-data class UserResponse(val results: List<Userb>)
-data class Userb(val email: String, val phone: String)
-
-/* Retrofit service that maps the different endpoints on the API, you'd create one
- * method per endpoint, and use the @Path, @Query and other annotations to customize
- * these at runtime */
-interface UserService {
-    @GET("/api")
-    suspend fun getUsers(): UserResponse
 }
