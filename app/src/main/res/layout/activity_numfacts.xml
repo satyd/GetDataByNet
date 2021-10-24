@@ -7,38 +7,41 @@
     tools:context=".questionApi.QuestionsActivity">
 
     <TextView
-        android:id="@+id/question_text"
+        android:id="@+id/num_fact_TW"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Question"
         android:padding="16dp"
+        android:text="@string/num_fact_TW_text"
+        android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/question_answer_text"
+        app:layout_constraintBottom_toTopOf="@+id/num_facts_ET"
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/question_answer_text"
+    <EditText
+        android:id="@+id/num_facts_ET"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="show answer"
-        app:layout_constraintBottom_toTopOf="@+id/next_question_btn"
+        android:hint="#?"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/next_numfact_btn"
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question_text" />
+        app:layout_constraintTop_toBottomOf="@+id/num_fact_TW"
+        android:autofillHints="" />
 
     <Button
-        android:id="@+id/next_question_btn"
+        android:id="@+id/next_numfact_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="next"
+        android:text="@string/num_fact_btn_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
 
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/question_answer_text" />
+        app:layout_constraintTop_toBottomOf="@+id/num_facts_ET" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

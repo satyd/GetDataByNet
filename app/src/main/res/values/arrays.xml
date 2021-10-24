@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="api_list" >
+        <item>Number Facts</item>
         <item>Question Api</item>
         <item>List of Data</item>
-        <item>Number Facts</item>
     </string-array>
 </resources>

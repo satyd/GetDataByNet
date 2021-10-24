@@ -11,6 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.GetDataByNet">
         <activity android:name=".questionApi.QuestionsActivity" />
         <activity android:name=".numFactApi.NumFactActivity" />

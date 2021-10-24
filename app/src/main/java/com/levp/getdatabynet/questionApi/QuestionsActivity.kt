@@ -26,13 +26,13 @@ class QuestionsActivity : AppCompatActivity() {
 
         GlobalScope.launch(Dispatchers.Main) {
             getQuestion()
-            question_text.text = currQuestion
+            num_fact_TW.text = currQuestion
         }
 
         next_question_btn.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
                 getQuestion()
-                question_text.text = currQuestion
+                num_fact_TW.text = currQuestion
                 question_answer_text.text = "show answer"
             }
 

@@ -10,16 +10,16 @@ interface NumFactApi {
     @GET("/api/random")
     suspend fun getQuestions(@Query("count") count: Int): Response<List<NumFact>>
 
-    @GET("/{num}")
-    suspend fun getByValue(@Path("num") num : Int): Response<NumFact>
+    @GET("/{num}?json")
+    suspend fun getByValue(@Path("num") num : Long): Response<NumFact>
 
     @GET("/{num}/math")
-    suspend fun getByValueMath(@Path("num") num : Int): Response<NumFact>
+    suspend fun getByValueMath(@Path("num") num : Long): Response<NumFact>
 
     @GET("/{num}/trivia")
-    suspend fun getByValueTrivia(@Path("num") num : Int): Response<NumFact>
+    suspend fun getByValueTrivia(@Path("num") num : Long): Response<NumFact>
 
-    @GET("/random")
+    @GET("/random?json")
     suspend fun getRandom(): Response<NumFact>
 
     @GET("/random")

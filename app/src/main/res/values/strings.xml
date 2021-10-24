@@ -4,4 +4,6 @@
     <string name="hello_blank_fragment">empty field :(</string>
     <string name="go_to_selected_btn">Go to selected</string>
     <string name="change_cat_btn_text">Change cat</string>
+    <string name="num_fact_TW_text">Fact</string>
+    <string name="num_fact_btn_text">next</string>
 </resources>
