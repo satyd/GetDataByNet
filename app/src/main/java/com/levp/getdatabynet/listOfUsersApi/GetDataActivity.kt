@@ -1,4 +1,4 @@
-package com.levp.getdatabynet
+package com.levp.getdatabynet.listOfUsersApi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,12 +7,13 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.levp.getdatabynet.R
 import com.levp.getdatabynet.data.PostModel
 import kotlinx.android.synthetic.main.activity_get_data.*
 
-class GetDataActivity : AppCompatActivity(), HomeAdapter.HomeListener  {
+class GetDataActivity : AppCompatActivity(), HomeAdapter.HomeListener {
 
-    private lateinit var vm:HomeViewModel
+    private lateinit var vm: HomeViewModel
     private lateinit var adapter: HomeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package com.levp.getdatabynet
+package com.levp.getdatabynet.listOfUsersApi
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

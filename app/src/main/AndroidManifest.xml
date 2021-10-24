@@ -12,8 +12,9 @@
         android:roundIcon="@mipmap/app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.GetDataByNet">
-        <activity android:name=".questionApi.QuestionsActivity"></activity>
-        <activity android:name=".GetDataActivity" />
+        <activity android:name=".questionApi.QuestionsActivity" />
+        <activity android:name=".numFactApi.NumFactActivity" />
+        <activity android:name=".listOfUsersApi.GetDataActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

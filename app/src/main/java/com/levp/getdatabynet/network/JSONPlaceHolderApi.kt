@@ -1,4 +1,4 @@
-package com.levp.getdatabynet.networkHabr
+package com.levp.getdatabynet.network
 
 
 import retrofit2.Call

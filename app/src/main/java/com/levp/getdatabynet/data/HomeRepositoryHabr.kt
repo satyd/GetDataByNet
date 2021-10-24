@@ -1,12 +1,10 @@
 package com.levp.getdatabynet.data
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.levp.getdatabynet.network.ApiClient
 import com.levp.getdatabynet.network.ApiInterface
-import com.levp.getdatabynet.networkHabr.NetworkService
-import com.levp.getdatabynet.networkHabr.Post
+import com.levp.getdatabynet.network.NetworkService
+import com.levp.getdatabynet.network.Post
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

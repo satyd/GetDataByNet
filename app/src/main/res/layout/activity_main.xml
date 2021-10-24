@@ -18,12 +18,15 @@
 
     <ImageView
         android:id="@+id/display_pic"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="320dp"
         android:gravity="center_horizontal"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_launcher_background"
-        android:layout_marginBottom="220dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -31,8 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:scaleType="fitXY"
 
+        android:visibility="invisible"
         android:text="@string/hello_blank_fragment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -13,6 +13,8 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.levp.getdatabynet.catApi.CatApi
+import com.levp.getdatabynet.listOfUsersApi.GetDataActivity
+import com.levp.getdatabynet.numFactApi.NumFactActivity
 import com.levp.getdatabynet.questionApi.QuestionsActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -25,9 +27,6 @@ import java.util.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MainViewModel
-    private val BASE_URL = "https://jsonplaceholder.typicode.com"
-    var catNum = 401
-    private val BASE_URL_CAT = "https://http.cat"
 
     //private val client = OkHttpClient()
 
@@ -77,6 +76,8 @@ class MainActivity : AppCompatActivity() {
 
             when(apiStr){
                 "question api"->{ startActivity(Intent(this, QuestionsActivity::class.java))}
+                "number facts"->{ startActivity(Intent(this, NumFactActivity::class.java))}
+                "list of data"->{ startActivity(Intent(this, GetDataActivity::class.java))}
                 else -> {}
             }
 
@@ -124,7 +125,7 @@ class MainActivity : AppCompatActivity() {
 
             if (response.isSuccessful) {
                 ans.complete(response.body()?.file ?: "https://http.cat/404")
-                Log.d("cat response", "${ans}")
+                Log.d("cat response", "$ans")
 
             } else {
                 Log.e("response", "failed to load cat")

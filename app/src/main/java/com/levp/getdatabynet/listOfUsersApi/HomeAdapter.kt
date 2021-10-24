@@ -1,13 +1,14 @@
-package com.levp.getdatabynet
+package com.levp.getdatabynet.listOfUsersApi
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.levp.getdatabynet.R
 import com.levp.getdatabynet.data.PostModel
 import kotlinx.android.synthetic.main.home_rv_item_view.view.*
 
-class HomeAdapter(var listener:HomeListener) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>(){
+class HomeAdapter(var listener: HomeListener) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>(){
 
     private var data : ArrayList<PostModel>?=null
 
