@@ -13,14 +13,23 @@ interface NumFactApi {
     @GET("/{num}?json")
     suspend fun getByValue(@Path("num") num : Long): Response<NumFact>
 
-    @GET("/{num}/math")
+    @GET("/{month}/{day}/date?json")
+    suspend fun getByDate(@Path("month") month : Long, @Path("day") day : Long,): Response<NumFact>
+
+    @GET("/{num}/math?json")
     suspend fun getByValueMath(@Path("num") num : Long): Response<NumFact>
 
-    @GET("/{num}/trivia")
+    @GET("/{num}/trivia?json")
     suspend fun getByValueTrivia(@Path("num") num : Long): Response<NumFact>
+
+    @GET("/{num}/year?json")
+    suspend fun getByValueYear(@Path("num") num : Long): Response<NumFact>
 
     @GET("/random?json")
     suspend fun getRandom(): Response<NumFact>
+
+    @GET("/random?json")
+    suspend fun getRandomByType(@Query("type") type:String): Response<NumFact>
 
     @GET("/random")
     suspend fun getRandomInRange(@Query("min") min:Int, @Query("max") max:Int): Response<NumFact>

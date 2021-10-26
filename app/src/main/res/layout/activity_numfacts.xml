@@ -9,39 +9,51 @@
     <TextView
         android:id="@+id/num_fact_TW"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:padding="16dp"
         android:text="@string/num_fact_TW_text"
         android:textAlignment="center"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/num_facts_ET"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
 
+
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <Spinner
+
+        android:id="@+id/numFacts_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/num_facts_types"
+        app:layout_constraintBottom_toTopOf="@+id/next_numfact_btn"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/num_facts_ET" />
+
 
     <EditText
         android:id="@+id/num_facts_ET"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:autofillHints=""
         android:hint="#?"
         android:inputType="number"
-        app:layout_constraintBottom_toTopOf="@+id/next_numfact_btn"
-        app:layout_constraintEnd_toEndOf="parent"
 
+        app:layout_constraintBottom_toTopOf="@+id/numFacts_spinner"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/num_fact_TW"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/num_fact_TW" />
 
     <Button
         android:id="@+id/next_numfact_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/num_fact_btn_text"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/num_facts_ET" />
+        app:layout_constraintTop_toBottomOf="@+id/numFacts_spinner" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
