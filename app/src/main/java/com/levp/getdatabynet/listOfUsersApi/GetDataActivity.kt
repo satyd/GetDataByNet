@@ -3,6 +3,8 @@ package com.levp.getdatabynet.listOfUsersApi
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +26,7 @@ class GetDataActivity : AppCompatActivity(), HomeAdapter.HomeListener {
         initAdapter()
 
         vm.fetchAllPosts()
+
 
         vm.postModelListLiveData?.observe(this, Observer {
             if (it!=null){

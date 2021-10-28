@@ -29,6 +29,9 @@ class NumFactActivity : AppCompatActivity() {
 
     var currText: String? = null
     var currNum: Long? = null
+    // ? enum class FactType{ TRIVIA, MATH, YEAR, DATE}
+    // ? var currType : FactType = FactType.TRIVIA
+
     private val types = arrayListOf<String>("trivia", "math", "year", "date")
     var type: String = types[Random().nextInt(3)]
 
@@ -118,11 +121,8 @@ class NumFactActivity : AppCompatActivity() {
     }
 
     suspend fun getFact(num: Long, fType: String) {
-
-
         val fact = CompletableDeferred<String>()
         val number = CompletableDeferred<Long>()
-
 
         val api = Retrofit.Builder()
             .baseUrl(BASE_URL_NUMBER_FACT)

@@ -8,21 +8,23 @@ import com.levp.getdatabynet.R
 import com.levp.getdatabynet.data.PostModel
 import kotlinx.android.synthetic.main.home_rv_item_view.view.*
 
-class HomeAdapter(var listener: HomeListener) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>(){
+class HomeAdapter(var listener: HomeListener) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
 
-    private var data : ArrayList<PostModel>?=null
+    private var data: ArrayList<PostModel>? = null
 
-    interface HomeListener{
+    interface HomeListener {
         fun onItemDeleted(postModel: PostModel, position: Int)
     }
 
-    fun setData(list: ArrayList<PostModel>){
+    fun setData(list: ArrayList<PostModel>) {
         data = list
         notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeViewHolder {
-        return HomeViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.home_rv_item_view, parent, false))
+        return HomeViewHolder(
+            LayoutInflater.from(parent.context).inflate(R.layout.home_rv_item_view, parent, false)
+        )
     }
 
     override fun getItemCount(): Int {
@@ -31,11 +33,11 @@ class HomeAdapter(var listener: HomeListener) : RecyclerView.Adapter<HomeAdapter
 
     override fun onBindViewHolder(holder: HomeViewHolder, position: Int) {
         val item = data?.get(position)
-        holder.bindView(item)
+        holder.bindView(item, listener, position)
     }
 
     fun addData(postModel: PostModel) {
-        data?.add(0,postModel)
+        data?.add(0, postModel)
         notifyItemInserted(0)
     }
 
@@ -44,10 +46,16 @@ class HomeAdapter(var listener: HomeListener) : RecyclerView.Adapter<HomeAdapter
         notifyDataSetChanged()
     }
 
-    class HomeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        fun bindView(item: PostModel?) {
-            itemView.tv_home_item_title.text = item?.title
-            itemView.tv_home_item_body.text = item?.body
+    class HomeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        fun bindView(item: PostModel?, listener: HomeListener, pos: Int) {
+            if(item!=null) {
+                itemView.tv_home_item_title.text = item.title
+                itemView.tv_home_item_body.text = item.body
+
+                itemView.img_delete.setOnClickListener {
+                    listener.onItemDeleted(item, pos)
+                }
+            }
         }
 
     }
