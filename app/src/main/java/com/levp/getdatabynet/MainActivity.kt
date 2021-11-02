@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -23,12 +24,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 
 
-@DelicateCoroutinesApi
+
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel : MainViewModel by viewModels()
 
-    //private val client = OkHttpClient()
 
     private var apiStr: String? = null
 
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
         getStarterCat()
 
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        //viewModel = ViewModelProvider(this)[MainViewModel::class.java] as MainViewModel<UiState>
 
         get_cat_btn.setOnClickListener {
             Toast.makeText(this, "loading image...", Toast.LENGTH_SHORT).show()
@@ -72,20 +72,27 @@ class MainActivity : AppCompatActivity() {
 
 
         goto_btn.setOnClickListener {
-            Log.d("api picker", apiStr?:"no string")
+            Log.d("api picker", apiStr ?: "no string")
 
-            when(apiStr){
-                "question api"->{ startActivity(Intent(this, QuestionsActivity::class.java))}
-                "number facts"->{ startActivity(Intent(this, NumFactActivity::class.java))}
-                "list of data"->{ startActivity(Intent(this, GetDataActivity::class.java))}
-                else -> {}
+            when (apiStr) {
+                "question api" -> {
+                    startActivity(Intent(this, QuestionsActivity::class.java))
+                }
+                "number facts" -> {
+                    startActivity(Intent(this, NumFactActivity::class.java))
+                }
+                "list of data" -> {
+                    startActivity(Intent(this, GetDataActivity::class.java))
+                }
+                else -> {
+                }
             }
 
         }
     }
 
     private fun getStarterCat() {
-        GlobalScope.launch(Dispatchers.Main) {
+        CoroutineScope(Dispatchers.Main).async {
             val catLink = getStarterCatLink()
             Log.d("cat link", catLink)
             Glide.with(this@MainActivity)
@@ -100,13 +107,52 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     override fun onLoadCleared(placeholder: Drawable?) {
-                        // this is called when imageView is cleared on lifecycle call or for
-                        // some other reason.
-                        // if you are referencing the bitmap somewhere else too other than this imageView
-                        // clear it here as you can no longer have the bitmap
                     }
                 })
         }
+    }
+
+    private fun render(uiState: UiState) {
+        when (uiState) {
+            is UiState.Loading -> {
+                onLoad()
+            }
+            is UiState.Success -> {
+                onSuccess(uiState)
+            }
+            is UiState.Error -> {
+                onError(uiState)
+            }
+        }
+    }
+
+    private fun onLoad() = apply {
+
+    }
+
+    private fun onSuccess(uiState: UiState.Success) = apply {
+
+        Glide.with(this@MainActivity)
+            .asBitmap()
+            .load(uiState.catImage)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(
+                    resource: Bitmap,
+                    transition: com.bumptech.glide.request.transition.Transition<in Bitmap>?
+                ) {
+                    display_pic.setImageBitmap(resource)
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                }
+            })
+
+    }
+
+    private fun onError(uiState: UiState.Error) {
+
+        Toast.makeText(this, uiState.message, Toast.LENGTH_SHORT).show()
+
     }
 
     private suspend fun getStarterCatLink(): String {
@@ -119,7 +165,8 @@ class MainActivity : AppCompatActivity() {
 
         var ans = CompletableDeferred<String>()
 
-        val operation = Job(GlobalScope.launch(Dispatchers.IO) {
+        val operation = Job(CoroutineScope(Dispatchers.IO).launch {
+
             Log.d("launch", "get cat coroutine launched")
             val response = api.getCatPic()
 
@@ -135,16 +182,6 @@ class MainActivity : AppCompatActivity() {
 
         return ans.await()
     }
-
-    private fun getInitialData1() {
-        lifecycleScope.launch {
-            viewModel.loadData1()
-            text = viewModel.text?.value
-
-        }
-        Toast.makeText(this, "$text loaded!", Toast.LENGTH_SHORT).show()
-    }
-
 
     private fun showData() {
 
