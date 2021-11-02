@@ -18,9 +18,9 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class QuestionsActivity : AppCompatActivity() {
 
-    private val BASE_URL_QUESTION = "https://jservice.io"
+
     private val NOT_LOADED_STR = "not loaded yet"
-    val gson = GsonBuilder().setLenient().create()
+
     private val viewModel: QuestionViewModel by viewModels()
     var currQuestion : String? = null
     var currAnswer : String? = null
@@ -72,61 +72,12 @@ class QuestionsActivity : AppCompatActivity() {
 
         question_text.text = question
         currAnswer = answer
+        currQuestion = question
+
     }
     private fun onError(uiState: UiState.Error) {
         progressBar.visibility = View.GONE
         next_question_btn.isEnabled = true
-
         toast(uiState.message)
-
-    }
-
-
-    suspend fun getQuestion(){
-        var question = CompletableDeferred<String>()
-        var answer = CompletableDeferred<String>()
-        //var question = CompletableDeferred<String>()
-
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL_QUESTION)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-            .create(QuestionApi::class.java)
-
-        GlobalScope.launch(Dispatchers.IO) {
-            val num = 1
-            Log.d("launch", "coroutine launched")
-            val response = api.getQuestion()
-
-            if (response.isSuccessful) {
-                val list = response.body()
-                answer.complete(list?.get(0)?.answer ?: NOT_LOADED_STR)
-                question.complete(list?.get(0)?.question ?: NOT_LOADED_STR)
-
-
-            } else {
-                Log.e("response", "failed to load data")
-            }
-//            api.getComments().enque(object : Callback<List<Comment>> {
-//                override fun onFailure(call: Call<List<Comment>>, t: Throwable) {
-//                    Log.e("response", "error occured")
-//                }
-//
-//                override fun onResponse(
-//                    call: Call<List<Comment>>,
-//                    response: Response<List<Comment>>
-//                ) {
-//                    response.body()?.let {
-//                        for (comment in it) {
-//                            Log.d("response", comment.toString)
-//                        }
-//                    }
-//                }
-//            })
-        }
-        currAnswer = answer.await()
-        currQuestion = question.await()
-        Log.e("question", "Question:$currQuestion\nAnswer:$currAnswer")
-
     }
 }
