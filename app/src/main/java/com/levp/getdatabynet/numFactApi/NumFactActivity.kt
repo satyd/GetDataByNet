@@ -45,7 +45,7 @@ class NumFactActivity : AppCompatActivity() {
         var month = c.get(Calendar.MONTH)
         var day = c.get(Calendar.DAY_OF_MONTH)
 
-        GlobalScope.launch(Dispatchers.Main) {
+        CoroutineScope(Dispatchers.Main).launch {
             getRandomFact(type)
             num_fact_TW.text = currText
         }
@@ -130,7 +130,7 @@ class NumFactActivity : AppCompatActivity() {
             .build()
             .create(NumFactApi::class.java)
 
-        GlobalScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).async {
 
             //Log.d("launch", "num coroutine launched")
 
@@ -160,22 +160,6 @@ class NumFactActivity : AppCompatActivity() {
             } else {
                 Log.e("response", "failed to load data")
             }
-//            api.getComments().enque(object : Callback<List<Comment>> {
-//                override fun onFailure(call: Call<List<Comment>>, t: Throwable) {
-//                    Log.e("response", "error occured")
-//                }
-//
-//                override fun onResponse(
-//                    call: Call<List<Comment>>,
-//                    response: Response<List<Comment>>
-//                ) {
-//                    response.body()?.let {
-//                        for (comment in it) {
-//                            Log.d("response", comment.toString)
-//                        }
-//                    }
-//                }
-//            })
         }
         currText = fact.await()
         currNum = number.await()
