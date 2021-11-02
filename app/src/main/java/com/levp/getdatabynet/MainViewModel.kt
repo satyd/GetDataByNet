@@ -5,40 +5,41 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import com.levp.getdatabynet.catApi.CatApi
+import com.levp.getdatabynet.catApi.CatImageUrl
 import com.levp.getdatabynet.data.HomeRepository
 import com.levp.getdatabynet.data.HomeRepositoryHabr
 import com.levp.getdatabynet.data.PostModel
+import kotlinx.coroutines.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-class MainViewModel(application: Application): AndroidViewModel(application) {
-    private var homeRepositoryHabr:HomeRepositoryHabr?=null
-    var postModelListLiveData : LiveData<List<PostModel>>?=null
-    var createPostLiveData:LiveData<PostModel>?=null
-    var deletePostLiveData:MutableLiveData<Boolean>?=null
-    var text:MutableLiveData<String>?=null
+class MainViewModel() : BaseViewModel<UiState>() {
 
-    init {
-        homeRepositoryHabr = HomeRepositoryHabr()
+    private val CAT_URL = "https://aws.random.cat"
+    private val api = Retrofit.Builder()
+        .baseUrl(CAT_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(CatApi::class.java)
 
-        //postModelListLiveData = MutableLiveData()
-        text = MutableLiveData()
+    fun getCat() {
+        uiState.value = UiState.Loading
 
+        val catPicDeferred = viewModelScope.async { api.getCatPic() }
 
+        viewModelScope.launch {
+            try {
+                val res = catPicDeferred.await()
+                uiState.value =
+                    UiState.Success(CatImageUrl(res.body()?.file ?: "https://http.cat/404"))
+
+            } catch (exception: Exception) {
+                uiState.value = UiState.Error("Network Request failed")
+            }
+        }
     }
-    fun loadData1(){
-        homeRepositoryHabr!!.getData()
-        text!!.value = HomeRepositoryHabr.text
-        Log.e("data", HomeRepositoryHabr.text.toString())
-    }
 
-    fun fetchAllPosts(){
-
-    }
-    fun createPost(postModel: PostModel){
-
-    }
-
-    fun deletePost(id:Int){
-
-    }
 
 }

@@ -1,5 +1,6 @@
 package com.levp.getdatabynet.numFactApi
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -8,47 +9,49 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import androidx.activity.viewModels
+import androidx.lifecycle.Observer
 import com.google.gson.GsonBuilder
 import com.levp.getdatabynet.R
+import com.levp.getdatabynet.questionApi.QuestionViewModel
+import com.levp.getdatabynet.questionApi.log
+import com.levp.getdatabynet.questionApi.toast
+
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_numfacts.*
+import kotlinx.android.synthetic.main.activity_numfacts.progressBar
 
-import kotlinx.coroutines.*
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
+
 import java.util.*
-import javax.xml.datatype.DatatypeConstants.MONTHS
 
-@DelicateCoroutinesApi
+
+
 class NumFactActivity : AppCompatActivity() {
 
-    private val BASE_URL_NUMBER_FACT = "http://numbersapi.com"
-    private val NOT_LOADED_STR = "not loaded yet"
-    val gson = GsonBuilder().setLenient().create()
 
-    var currText: String? = null
+    private val viewModel: NumFactViewModel by viewModels()
     var currNum: Long? = null
-    // ? enum class FactType{ TRIVIA, MATH, YEAR, DATE}
-    // ? var currType : FactType = FactType.TRIVIA
 
     private val types = arrayListOf<String>("trivia", "math", "year", "date")
     var type: String = types[Random().nextInt(3)]
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_numfacts)
-
+        viewModel.uiStateNF().observe(this, { uiState ->
+            if (uiState != null) {
+                render(uiState)
+            }
+        })
         val c = Calendar.getInstance()
-        var year = c.get(Calendar.YEAR)
+        val year = c.get(Calendar.YEAR)
         var month = c.get(Calendar.MONTH)
         var day = c.get(Calendar.DAY_OF_MONTH)
 
-        GlobalScope.launch(Dispatchers.Main) {
-            getRandomFact(type)
-            num_fact_TW.text = currText
-        }
+
         val spinner = findViewById<Spinner>(R.id.numFacts_spinner)
         val adapter: ArrayAdapter<*> = ArrayAdapter.createFromResource(
             this,
@@ -59,6 +62,7 @@ class NumFactActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            @SuppressLint("SetTextI18n")
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 itemSelected: View?, selectedItemPosition: Int, selectedId: Long
@@ -72,27 +76,21 @@ class NumFactActivity : AppCompatActivity() {
                 if (type == "date") {
                     num_facts_ET.setText("$day.${month + 1}")
                 } else {
-                    //Log.e("currNum", "${currNum}")
+
                     num_facts_ET.setText(currNum?.toString() ?: "")
                 }
-
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+        viewModel.getRandomFact(type)
 
         num_facts_ET.setOnClickListener {
             if (type == "date") {
                 Log.d("datepick", "date picker created")
-                val check = num_facts_ET.text.toString()
-                if (check.contains('.')) {
-                    val txt = check.split(".")
 
-
-                }
                 val dpd = DatePickerDialog(this, { _, _, monthOfYear, dayOfMonth ->
 
-                    // Display Selected date in textbox
                     num_facts_ET.setText("$dayOfMonth.${monthOfYear + 1}")
                     month = monthOfYear
                     day = dayOfMonth
@@ -103,123 +101,52 @@ class NumFactActivity : AppCompatActivity() {
         }
 
         next_numfact_btn.setOnClickListener {
+            val curr = num_facts_ET.text.toString().toLongOrNull()
+            currNum = curr ?: currNum
 
-            val currNum = num_facts_ET.text.toString().toLongOrNull()
-            if (currNum != null)
-                GlobalScope.launch(Dispatchers.Main) {
-                    getFact(currNum, type)
-
-                    num_fact_TW.text = currText
-                }
-            else {
-                GlobalScope.launch(Dispatchers.Main) {
-                    getRandomFact(type)
-                    num_fact_TW.text = currText
-                }
+            if (currNum != null || type == "date") {
+                val date = num_facts_ET.text.toString()
+                viewModel.getFact(currNum ?: 0, type, date)
+            } else {
+                viewModel.getRandomFact(type)
             }
         }
     }
 
-    suspend fun getFact(num: Long, fType: String) {
-        val fact = CompletableDeferred<String>()
-        val number = CompletableDeferred<Long>()
-
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL_NUMBER_FACT)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-            .create(NumFactApi::class.java)
-
-        GlobalScope.launch(Dispatchers.IO) {
-
-            //Log.d("launch", "num coroutine launched")
-
-            val response: Response<NumFact> = when (fType) {
-                "trivia" -> {
-                    api.getByValueTrivia(num)
-                }
-                "math" -> {
-                    api.getByValueMath(num)
-                }
-                "year" -> {
-                    api.getByValueYear(num)
-                }
-                "date" -> {
-                    val txt = num_facts_ET.text.toString().split(".")
-                    api.getByDate(txt[1].toLong(), txt[0].toLong())
-                }
-                else -> {
-                    api.getRandom()
-                }
+    private fun render(uiState: UiStateNF) {
+        when (uiState) {
+            is UiStateNF.Loading -> {
+                onLoad()
             }
+            is UiStateNF.Success -> {
+                onSuccess(uiState)
 
-            if (response.isSuccessful) {
-                val ans = response.body()
-                fact.complete(ans?.text ?: NOT_LOADED_STR)
-                number.complete(ans?.number ?: 404)
-            } else {
-                Log.e("response", "failed to load data")
             }
-//            api.getComments().enque(object : Callback<List<Comment>> {
-//                override fun onFailure(call: Call<List<Comment>>, t: Throwable) {
-//                    Log.e("response", "error occured")
-//                }
-//
-//                override fun onResponse(
-//                    call: Call<List<Comment>>,
-//                    response: Response<List<Comment>>
-//                ) {
-//                    response.body()?.let {
-//                        for (comment in it) {
-//                            Log.d("response", comment.toString)
-//                        }
-//                    }
-//                }
-//            })
+            is UiStateNF.Error -> {
+                onError(uiState)
+            }
         }
-        currText = fact.await()
-        currNum = number.await()
-
-        Log.e("number fact", "number:$currNum\nfact:$currText")
-
     }
 
-    suspend fun getRandomFact(fType: String) {
-        //Log.e("fetching random fact", "type:$fType")
-        val fact = CompletableDeferred<String>()
-        val number = CompletableDeferred<Long>()
+    private fun onLoad() {
+        progressBar.visibility = View.VISIBLE
+        next_numfact_btn.isEnabled = false
+    }
 
+    private fun onSuccess(uiState: UiStateNF.Success) {
+        next_numfact_btn.isEnabled = true
+        progressBar.visibility = View.GONE
 
-        val api = Retrofit.Builder()
-            .baseUrl(BASE_URL_NUMBER_FACT)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .build()
-            .create(NumFactApi::class.java)
+        val response = uiState.numFactResponse
+        val body = response.body()
 
-        GlobalScope.launch(Dispatchers.IO) {
+        val fact = body?.text ?: "whoops..."
+        num_fact_TW.text = fact
+    }
 
-            Log.d("launch", "num coroutine launched")
-            val response = if (fType != "date") {
-                api.getRandomByType(fType)
-            } else {
-                val txt = num_facts_ET.text.toString().split(".")
-                api.getByDate(txt[1].toLong(), txt[0].toLong())
-            }
-
-            if (response.isSuccessful) {
-                val ans = response.body()
-                fact.complete(ans?.text ?: NOT_LOADED_STR)
-                number.complete(ans?.number ?: 404)
-            } else {
-                Log.e("response", "failed to load data")
-            }
-
-        }
-        currText = fact.await()
-        if (type != "date")
-            currNum = number.await()
-
-        Log.e("number fact", "number:$currNum\nfact:$currText")
-
+    private fun onError(uiState: UiStateNF.Error) {
+        progressBar.visibility = View.GONE
+        next_numfact_btn.isEnabled = true
+        toast(uiState.message)
     }
 }
