@@ -1,5 +1,6 @@
 package com.levp.getdatabynet.numFactApi
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -28,30 +29,25 @@ import java.util.*
 
 class NumFactActivity : AppCompatActivity() {
 
-    private val BASE_URL_NUMBER_FACT = "http://numbersapi.com"
-    private val NOT_LOADED_STR = "not loaded yet"
-    private val viewModel: NumFactViewModel by viewModels()
-    val gson = GsonBuilder().setLenient().create()
 
-    var currText: String? = null
+    private val viewModel: NumFactViewModel by viewModels()
     var currNum: Long? = null
-    // ? enum class FactType{ TRIVIA, MATH, YEAR, DATE}
-    // ? var currType : FactType = FactType.TRIVIA
 
     private val types = arrayListOf<String>("trivia", "math", "year", "date")
     var type: String = types[Random().nextInt(3)]
 
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_numfacts)
-        viewModel.uiStateNF().observe(this, Observer { uiState ->
+        viewModel.uiStateNF().observe(this, { uiState ->
             if (uiState != null) {
                 render(uiState)
             }
         })
         val c = Calendar.getInstance()
-        var year = c.get(Calendar.YEAR)
+        val year = c.get(Calendar.YEAR)
         var month = c.get(Calendar.MONTH)
         var day = c.get(Calendar.DAY_OF_MONTH)
 
@@ -66,6 +62,7 @@ class NumFactActivity : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            @SuppressLint("SetTextI18n")
             override fun onItemSelected(
                 parent: AdapterView<*>?,
                 itemSelected: View?, selectedItemPosition: Int, selectedId: Long
@@ -91,12 +88,9 @@ class NumFactActivity : AppCompatActivity() {
         num_facts_ET.setOnClickListener {
             if (type == "date") {
                 Log.d("datepick", "date picker created")
-                val check = num_facts_ET.text.toString()
-                if (check.contains('.')) {
-                    val txt = check.split(".")
-                }
+
                 val dpd = DatePickerDialog(this, { _, _, monthOfYear, dayOfMonth ->
-                    // Display Selected date in textbox
+
                     num_facts_ET.setText("$dayOfMonth.${monthOfYear + 1}")
                     month = monthOfYear
                     day = dayOfMonth
@@ -126,7 +120,7 @@ class NumFactActivity : AppCompatActivity() {
             }
             is UiStateNF.Success -> {
                 onSuccess(uiState)
-                log("currNum", currNum.toString())
+
             }
             is UiStateNF.Error -> {
                 onError(uiState)
@@ -145,7 +139,7 @@ class NumFactActivity : AppCompatActivity() {
 
         val response = uiState.numFactResponse
         val body = response.body()
-        log("response", response.toString())
+
         val fact = body?.text ?: "whoops..."
         num_fact_TW.text = fact
     }
