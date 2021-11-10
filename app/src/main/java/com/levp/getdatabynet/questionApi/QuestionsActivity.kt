@@ -19,7 +19,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 @AndroidEntryPoint
 class QuestionsActivity : AppCompatActivity() {
 
-
     private val NOT_LOADED_STR = "not loaded yet"
 
     private val viewModel: QuestionViewModel by viewModels()
@@ -67,9 +66,9 @@ class QuestionsActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
 
         val response = uiState.question
-        val list = response.body()
-        val answer = list?.get(0)?.answer ?: NOT_LOADED_STR
-        val question = list?.get(0)?.question ?: NOT_LOADED_STR
+
+        val answer = response.answer ?: NOT_LOADED_STR
+        val question = response.question ?: NOT_LOADED_STR
 
         question_text.text = question
         currAnswer = answer

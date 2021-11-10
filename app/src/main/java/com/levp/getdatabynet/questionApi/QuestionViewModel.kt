@@ -1,27 +1,26 @@
 package com.levp.getdatabynet.questionApi
 
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-
-class QuestionViewModel(
-    private val BASE_URL_QUESTION: String = "https://jservice.io",
-    private val api: QuestionApi = buildQuestionApi(BASE_URL_QUESTION)
-): QuestionBaseViewModel<UiState>() {
+@HiltViewModel
+class QuestionViewModel @Inject constructor(
+    private val repository: QRepository
+) : QuestionBaseViewModel<UiState>() {
 
     fun getQuestion() {
         uiState.value = UiState.Loading
-        viewModelScope.launch {
-            try {
-
-                val question = api.getQuestion()
-                uiState.value = UiState.Success(question)
-
-
-            } catch (exception: Exception) {
-                uiState.value = UiState.Error("Network Request failed")
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val response = repository.getQuestion()) {
+                is QResource.Success -> {
+                    val question = response.data!![0]
+                    uiState.postValue(UiState.Success(question))
+                }
+                is QResource.Error -> uiState.postValue(UiState.Error("Network Request failed"))
             }
         }
     }
-
 }
