@@ -2,6 +2,7 @@
 <resources>
     <string-array name="api_list" >
         <item>Number Facts</item>
+        <item>Currency Converter</item>
         <item>Question Api</item>
         <item>List of Data</item>
     </string-array>
