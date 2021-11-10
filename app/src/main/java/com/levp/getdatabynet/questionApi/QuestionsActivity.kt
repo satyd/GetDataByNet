@@ -10,12 +10,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.google.gson.GsonBuilder
 import com.levp.getdatabynet.R
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_questions.*
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-
+@AndroidEntryPoint
 class QuestionsActivity : AppCompatActivity() {
 
 

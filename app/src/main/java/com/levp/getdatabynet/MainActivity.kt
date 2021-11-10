@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.levp.getdatabynet.catApi.CatApi
+import com.levp.getdatabynet.currencyconverse.CurrencyConvertActivity
 import com.levp.getdatabynet.listOfUsersApi.GetDataActivity
 import com.levp.getdatabynet.numFactApi.NumFactActivity
 import com.levp.getdatabynet.questionApi.QuestionsActivity
@@ -85,6 +86,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this, GetDataActivity::class.java))
                 }
                 else -> {
+                    startActivity(Intent(this, CurrencyConvertActivity::class.java))
                 }
             }
 
