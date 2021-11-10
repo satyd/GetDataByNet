@@ -2,23 +2,16 @@ package com.levp.getdatabynet.questionApi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.View.inflate
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import com.google.gson.GsonBuilder
 import com.levp.getdatabynet.R
+import com.levp.getdatabynet.questionApi.repository.QuestionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_questions.*
-import kotlinx.coroutines.*
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @AndroidEntryPoint
 class QuestionsActivity : AppCompatActivity() {
-
 
     private val NOT_LOADED_STR = "not loaded yet"
 
@@ -67,9 +60,9 @@ class QuestionsActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
 
         val response = uiState.question
-        val list = response.body()
-        val answer = list?.get(0)?.answer ?: NOT_LOADED_STR
-        val question = list?.get(0)?.question ?: NOT_LOADED_STR
+
+        val answer = response.answer ?: NOT_LOADED_STR
+        val question = response.question ?: NOT_LOADED_STR
 
         question_text.text = question
         currAnswer = answer

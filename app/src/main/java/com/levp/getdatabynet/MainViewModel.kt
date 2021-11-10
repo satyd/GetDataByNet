@@ -1,16 +1,8 @@
 package com.levp.getdatabynet
 
-import android.app.Application
-import android.util.Log
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.levp.getdatabynet.catApi.CatApi
 import com.levp.getdatabynet.catApi.CatImageUrl
-import com.levp.getdatabynet.data.HomeRepository
-import com.levp.getdatabynet.data.HomeRepositoryHabr
-import com.levp.getdatabynet.data.PostModel
 import kotlinx.coroutines.*
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

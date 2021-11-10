@@ -1,4 +1,4 @@
-package com.levp.getdatabynet.questionApi
+package com.levp.getdatabynet.questionApi.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

@@ -1,5 +1,6 @@
-package com.levp.getdatabynet.questionApi
+package com.levp.getdatabynet.questionApi.data
 
+import com.levp.getdatabynet.questionApi.data.Question
 import retrofit2.Response
 import retrofit2.http.GET
 

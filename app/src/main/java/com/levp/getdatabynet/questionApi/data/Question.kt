@@ -1,4 +1,4 @@
-package com.levp.getdatabynet.questionApi
+package com.levp.getdatabynet.questionApi.data
 
 data class Question(
     val id: Int,
