@@ -1,6 +1,8 @@
-package com.levp.getdatabynet.questionApi
+package com.levp.getdatabynet.questionApi.repository
 
 import androidx.lifecycle.viewModelScope
+import com.levp.getdatabynet.questionApi.QResource
+import com.levp.getdatabynet.questionApi.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

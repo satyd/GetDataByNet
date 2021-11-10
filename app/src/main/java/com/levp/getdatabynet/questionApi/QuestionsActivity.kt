@@ -2,19 +2,13 @@ package com.levp.getdatabynet.questionApi
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.view.View.inflate
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import com.google.gson.GsonBuilder
 import com.levp.getdatabynet.R
+import com.levp.getdatabynet.questionApi.repository.QuestionViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_questions.*
-import kotlinx.coroutines.*
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 @AndroidEntryPoint
 class QuestionsActivity : AppCompatActivity() {

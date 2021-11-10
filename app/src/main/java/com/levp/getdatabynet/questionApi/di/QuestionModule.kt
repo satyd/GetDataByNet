@@ -1,6 +1,9 @@
-package com.levp.getdatabynet.questionApi
+package com.levp.getdatabynet.questionApi.di
 
 import com.google.gson.GsonBuilder
+import com.levp.getdatabynet.questionApi.repository.DefaultQuestionRep
+import com.levp.getdatabynet.questionApi.repository.QRepository
+import com.levp.getdatabynet.questionApi.data.QuestionApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +20,7 @@ object QuestionModule {
 
     @Singleton
     @Provides
-    fun provideQuestionsApi():QuestionApi = Retrofit.Builder()
+    fun provideQuestionsApi(): QuestionApi = Retrofit.Builder()
         .baseUrl(BASE_URL_QUESTION)
         .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
         .build()

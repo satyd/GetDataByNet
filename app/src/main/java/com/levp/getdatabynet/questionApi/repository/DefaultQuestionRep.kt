@@ -1,6 +1,9 @@
-package com.levp.getdatabynet.questionApi
+package com.levp.getdatabynet.questionApi.repository
 
 
+import com.levp.getdatabynet.questionApi.QResource
+import com.levp.getdatabynet.questionApi.data.Question
+import com.levp.getdatabynet.questionApi.data.QuestionApi
 import javax.inject.Inject
 
 class DefaultQuestionRep @Inject constructor(

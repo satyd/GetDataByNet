@@ -1,8 +1,7 @@
-package com.levp.getdatabynet.questionApi
+package com.levp.getdatabynet.questionApi.repository
 
 import com.levp.getdatabynet.questionApi.QResource
-import com.levp.getdatabynet.questionApi.Question
-import retrofit2.Response
+import com.levp.getdatabynet.questionApi.data.Question
 
 
 interface QRepository {

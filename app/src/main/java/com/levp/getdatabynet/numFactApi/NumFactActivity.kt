@@ -10,14 +10,9 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.activity.viewModels
-import androidx.lifecycle.Observer
-import com.google.gson.GsonBuilder
 import com.levp.getdatabynet.R
-import com.levp.getdatabynet.questionApi.QuestionViewModel
-import com.levp.getdatabynet.questionApi.log
 import com.levp.getdatabynet.questionApi.toast
 
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_numfacts.*
 import kotlinx.android.synthetic.main.activity_numfacts.progressBar
 

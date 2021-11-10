@@ -1,6 +1,6 @@
 package com.levp.getdatabynet.questionApi
 
-import retrofit2.Response
+import com.levp.getdatabynet.questionApi.data.Question
 
 sealed class UiState {
     object Loading : UiState()

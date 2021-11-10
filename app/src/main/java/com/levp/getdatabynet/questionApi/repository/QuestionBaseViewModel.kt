@@ -1,9 +1,8 @@
-package com.levp.getdatabynet.questionApi
+package com.levp.getdatabynet.questionApi.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 open class QuestionBaseViewModel<T> : ViewModel() {
 
